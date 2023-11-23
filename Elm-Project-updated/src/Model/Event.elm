@@ -33,13 +33,25 @@ categoryView category =
             text "Award"
 
 
+cmp : Event -> Event -> Order
+cmp ev1 ev2 =
+    Interval.compare ev1.interval ev2.interval
+
+
 sortByInterval : List Event -> List Event
 sortByInterval events =
-     events
+    List.sortWith cmp events
     --Debug.todo "Implement Event.sortByInterval"
 
 
 view : Event -> Html Never
 view event =
-    -- div [] []
-    Debug.todo "Implement the Model.Event.view function"
+    div [if event.important == False then class "event" else class "event event-important"] [
+        div[class "event-title"][text event.title],
+        div[class "event-interval"][],
+        div[class "event-description"][event.description],
+        div[class "event-category"][categoryView event.category],
+        div[class "event-url"][text (Maybe.withDefault "Nothing" event.url)]
+
+    ]
+   -- Debug.todo "Implement the Model.Event.view function"

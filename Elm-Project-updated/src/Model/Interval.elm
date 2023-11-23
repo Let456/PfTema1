@@ -2,7 +2,7 @@ module Model.Interval exposing (Interval, compare, full, length, oneYear, open, 
 
 import Html exposing (Html, div, p, text)
 import Html.Attributes exposing (class, style)
-import Model.Date as Date exposing (Date, Month)
+import Model.Date as Date exposing (Date, Month, monthToString)
 import Model.Util exposing (chainCompare)
 
 
@@ -96,11 +96,37 @@ If the `start` field is equal, the they are compare by the `end` fields:
 -}
 compare : Interval -> Interval -> Order
 compare (Interval intA) (Interval intB) =
-    -- EQ
-    Debug.todo "Implement Model.Interval.compare"
+    case (Date.compare intA.start intB.start) of
+        LT -> LT
+        GT -> GT
+        EQ -> case (intA.end, intB.end) of
+                (Nothing, Nothing) -> EQ
+                (Just iA, Just iB) -> Date.compare iA iB
+                (Just iA, Nothing) -> LT
+                (Nothing, Just iB) -> GT
+    --Debug.todo "Implement Model.Interval.compare"
 
+startInt : Interval -> String
+startInt (Interval int) =
+    Date.printDate int.start
+
+endInt : Interval -> String
+endInt (Interval int) =
+    case int.end of
+        Just endI -> Date.printDate endI
+        Nothing -> "Present"
+
+lengthInt : Interval -> String
+lengthInt (Interval int) =
+    case length (Interval int) of
+        Just(years, months ) -> String.fromInt(years) ++ " " ++ String.fromInt(months)
+        Nothing -> ""
 
 view : Interval -> Html msg
 view interval =
-    -- div [] []
-    Debug.todo "Implement Model.Interval.view"
+    div [class "interval"] [
+        div[class "interval-start"][text (startInt interval)],
+        div[class "interval-end"][text (endInt interval)],
+        div[class "interval-length"][text (lengthInt interval)]
+    ]
+    --Debug.todo "Implement Model.Interval.view"

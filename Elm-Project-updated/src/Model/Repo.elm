@@ -38,5 +38,10 @@ Field mapping (JSON -> Elm):
 -}
 decodeRepo : De.Decoder Repo
 decodeRepo =
-    De.fail "Not implemented"
-    --Debug.todo "Implement Model.Repo.decodeRepo"
+    De.map5 Repo
+        (De.field "name" De.string)
+        (De.maybe (De.field "description" De.string))
+        (De.field "html_url" De.string)
+        (De.field "pushed_at" De.string)
+        (De.field "stargazers_count" De.int)
+
